@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard de Notícias Centralizadas</title>
+    <style>
+        /* Fundo com texto N8N grande, translúcido e centralizado */
+        body {
+            position: relative;
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body::before {
+            content: 'N8N';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20vw;
+            font-weight: bold;
+            color: #0a74da33; /* Azul translúcido */
+            user-select: none;
+            pointer-events: none;
+            z-index: 0;
+            font-family: 'Orbitron', Arial, sans-serif;
+        }
+
+        /* Conteúdo principal */
+        .dashboard-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 40px auto 60px;
+            padding: 20px 40px 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+        }
+        h1 {
+            text-align: center;
+            font-family: 'Orbitron', Arial, sans-serif;
+            color: #2e52a0;
+            font-weight: 900;
+            font-size: 3rem;
+            margin: 0 0 30px;
+            text-shadow: 2px 2px 8px #25B6F5,
+                         0 0 24px #fff,
+                         0 3px 42px #09d;
+        }
+        .news-list {
+            margin: 0 auto;
+        }
+        .news-item {
+            border-bottom: 1px solid #ddd;
+            padding: 18px 0;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        .news-img {
+            max-width: 120px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 9px rgba(0,0,0,0.1);
+        }
+        .news-info {
+            flex-grow: 1;
+        }
+        .news-title {
+            font-weight: 700;
+            font-size: 1.25em;
+            margin-bottom: 6px;
+            color: #2e52a0;
+            font-family: 'Orbitron', Arial, sans-serif;
+            text-shadow: 1px 2px 6px #fff7, 0 0 8px #25B6F5;
+        }
+        .news-link {
+            font-size: 1.1em;
+            color: #c40000;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .news-link:hover {
+            background: #ffeaea;
+            text-decoration: underline;
+        }
+        .news-date, .news-source {
+            font-size: 0.95em;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="dashboard-content">
+        <h1>Dashboard de Notícias Centralizadas</h1>
+        <section class="news-list" id="newsList">
+            <p>Carregando notícias...</p>
+        </section>
+    </div>
+
+    <script>
+        const webhookUrl = 'http://192.168.0.69:5678/webhook/api/noticias'; // Substitua pelo seu IP e webhook real
+
+        async function loadNews() {
+            const newsList = document.getElementById('newsList');
+            try {
+                const resp = await fetch(webhookUrl);
+                const items = await resp.json();
+                let noticias = Array.isArray(items) ? items : [items];
+
+                if (noticias.length === 0) {
+                    newsList.innerHTML = '<p>Nenhuma notícia encontrada.</p>';
+                    return;
+                }
+
+                let html = '';
+                noticias.forEach(item => {
+                    html += `<div class="news-item">
+                        ${item.image ? `<img src="${item.image}" alt="Imagem da notícia" class="news-img" />` : ''}
+                        <div class="news-info">
+                            <div class="news-title">${item.title || '(Sem título)'}</div>
+                            <div class="news-date">${item.pubDate || ''} | <a class="news-link" href="${item.link || '#'}" target="_blank" rel="noopener noreferrer">Ver Notícia</a></div>
+                            <div class="news-source">${item.source ? `Fonte: ${item.source}` : ''}</div>
+                        </div>
+                    </div>`;
+                });
+                newsList.innerHTML = html;
+            } catch (error) {
+                newsList.innerHTML = '<p>Erro ao carregar notícias.</p>';
+                console.error('Erro ao buscar notícias:', error);
+            }
+        }
+        loadNews();
+    </script>
+</body>
+</html>

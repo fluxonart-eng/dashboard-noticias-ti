@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/thaysmoreira", "destination": "/thaysmoreira/" },
+    { "source": "/thaysmoreira/:path*", "destination": "/thaysmoreira/:path*" }
+  ]
+}

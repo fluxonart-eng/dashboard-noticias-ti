@@ -158,8 +158,8 @@ function logoutUser() { auth.signOut(); }
 document.getElementById('password').addEventListener('keypress', (e) => {
 if (e.key === 'Enter') loginUser();
 });
-const webhookUrl = 'https://n8n.fluxon.ia.br/webhook/api/noticias';
-const youtubeWebhookUrl = 'https://n8n.fluxon.ia.br/webhook/youtube-videos';
+const webhookUrl = 'http://163.176.248.249:5678/webhook/api/noticias';
+const youtubeWebhookUrl = 'http://163.176.248.249:5678/webhook/youtube-videos';
 async function loadNews() {
 const newsList = document.getElementById('newsList');
 try {

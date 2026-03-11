@@ -22,7 +22,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* CONTAINER PRINCIPAL (SHELL) */
         .app-shell {
             width: 100%;
             max-width: 480px;
@@ -35,17 +34,17 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* BANNER - Correção para carregar no Celular como tag IMG */
         .app-banner {
             width: 100%;
             background-color: #000;
             border-bottom: 2px solid #ffcc00;
-            line-height: 0;
         }
+        
         .app-banner img {
             width: 100%;
             height: auto;
             display: block;
+            border: none;
         }
 
         .app-header { padding: 20px 20px 5px; text-align: left; }
@@ -133,7 +132,7 @@
 
     <div class="app-shell">
         <div class="app-banner">
-            <img src="banner.png" alt="Melodic Pulse Banner">
+            <img src="banner.png" alt="Melodic Pulse Banner" width="480" height="auto">
         </div>
 
         <div class="app-header">

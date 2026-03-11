@@ -5,192 +5,257 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Melodic Pulse - Global Scanner</title>
     
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link rel="apple-touch-icon" href="logo.svg">
-    
+    <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0d0d0d">
 
     <style>
         body {
+            background-color: #000;
+            color: #f0f0f0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; /* Centraliza no PC */
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* CONTAINER PRINCIPAL (SHELL) */
+        .app-shell {
+            width: 100%;
+            max-width: 480px; /* Mantém formato de celular no PC */
             background-color: #0d0d0d;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-        }
-
-        .header {
-            width: 100%;
-            max-width: 500px;
             position: relative;
+            padding-bottom: 180px; /* Espaço para o player fixo */
+            min-height: 100vh;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* Correção para o iPhone: Garantir que a imagem ocupe o espaço correto */
-        .header img {
+        /* BANNER - Correção para carregar no Celular */
+        .app-banner {
             width: 100%;
-            height: auto;
-            display: block;
+            aspect-ratio: 16 / 9;
+            background-image: url('banner.png?v=5'); /* v=5 força atualização */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #000;
             border-bottom: 2px solid #ffcc00;
         }
 
-        .container {
-            width: 90%;
-            max-width: 500px;
-            padding: 20px 0;
-        }
-
-        .station-card {
+        .app-header { padding: 20px 20px 5px; text-align: left; }
+        .app-header h1 { color: #ffcc00; font-size: 24px; margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
+        
+        .scanner-info-bar { 
             background: #1a1a1a;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-left: 4px solid transparent;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            padding: 8px 20px;
+            margin: 10px 0;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+        #scanner-status { 
+            font-size: 11px; color: #ffcc00; 
+            text-transform: uppercase; letter-spacing: 1px;
+            font-weight: bold; margin: 0;
         }
 
-        .station-card.active {
-            border-left-color: #ffcc00;
-            background: #252525;
+        .filters {
+            display: flex; gap: 10px; overflow-x: auto;
+            padding: 5px 20px 15px; scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-chip {
+            background: #252525; border: 1px solid #444;
+            padding: 8px 15px; border-radius: 20px;
+            white-space: nowrap; cursor: pointer; color: #bbb; font-size: 13px;
+            transition: 0.3s;
+        }
+        .filter-chip.active { background: #ffcc00; color: #000; font-weight: bold; border-color: #ffcc00; }
+        .filter-chip.fav-tab { border-color: #ff4444; color: #ff4444; }
+        .filter-chip.fav-tab.active { background: #ff4444; color: #fff; }
+
+        .main-content { padding: 0 15px; }
+        .radio-card {
+            background: #181818; border-radius: 12px;
+            padding: 12px 15px; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-left: 4px solid #333;
+            animation: slideUp 0.3s ease forwards;
         }
 
-        .station-info {
-            display: flex;
-            flex-direction: column;
-        }
+        .info h3 { margin: 0; font-size: 15px; color: #fff; line-height: 1.2; }
+        .info span { color: #888; font-size: 10px; display: block; margin-top: 4px; }
 
-        .station-name {
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #ffcc00;
-        }
-
-        .station-genre {
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 4px;
-        }
+        .actions { display: flex; align-items: center; gap: 10px; }
+        .fav-btn { background: none; border: none; cursor: pointer; font-size: 20px; color: #333; transition: 0.3s; padding: 5px;}
+        .fav-btn.active { color: #ff4444; }
 
         .play-btn {
-            background: #ffcc00;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-size: 20px;
+            background: #ffcc00; border: none; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer; font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .status-bar {
-            position: sticky;
-            bottom: 0;
-            width: 100%;
-            background: #111;
-            padding: 15px 0;
-            border-top: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+        .player-bar {
+            position: fixed; bottom: 0; 
+            width: 100%; max-width: 480px; /* Player respeita largura do shell */
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 15px 20px 30px; border-top: 1px solid #333;
+            z-index: 1000; box-sizing: border-box;
         }
 
-        .eq-container {
-            display: flex;
-            gap: 3px;
-            height: 20px;
-            align-items: flex-end;
-            opacity: 0.3;
-        }
+        .player-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .player-text { flex-grow: 1; overflow: hidden; margin-right: 10px; }
+        .player-text b { font-size: 13px; color: #fff; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .eq-bar { width: 4px; background: #ffcc00; height: 3px; border-radius: 2px; }
+        .eq-container { display: flex; gap: 3px; height: 16px; align-items: flex-end; margin-top: 5px; opacity: 0.2; }
+        .eq-bar { width: 3px; background: #ffcc00; height: 3px; border-radius: 1px; }
         .playing .eq-container { opacity: 1; }
         .playing .eq-bar { animation: eqAnim 0.5s infinite ease-in-out alternate; }
         .playing .eq-bar:nth-child(2) { animation-delay: 0.2s; }
         .playing .eq-bar:nth-child(3) { animation-delay: 0.4s; }
         
-        @keyframes eqAnim { from { height: 3px; } to { height: 18px; } }
+        @keyframes eqAnim { from { height: 3px; } to { height: 16px; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .volume-box { width: 80%; display: flex; align-items: center; gap: 10px; }
-        .volume-slider { flex-grow: 1; accent-color: #ffcc00; height: 5px; }
+        .volume-box { display: flex; align-items: center; gap: 10px; }
+        .volume-slider { flex-grow: 1; accent-color: #ffcc00; height: 4px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="topo.png?v=2" alt="Melodic Pulse Banner">
-    </div>
+    <div class="app-shell">
+        <div class="app-banner"></div>
 
-    <div class="container" id="station-list">
-        <div class="station-card" onclick="playStation('https://stream.radioparadise.com/rock-192', this)">
-            <div class="station-info">
-                <span class="station-name">Radio Paradise Rock</span>
-                <span class="station-genre">Classic & Modern Rock</span>
+        <div class="app-header">
+            <h1>MELODIC PULSE</h1>
+        </div>
+
+        <div class="scanner-info-bar">
+            <p id="scanner-status">AGUARDANDO COMANDO...</p>
+        </div>
+
+        <div class="filters">
+            <div class="filter-chip active" onclick="filtrar('melodic rock', this)">🎸 Melodic</div>
+            <div class="filter-chip" onclick="filtrar('slow rock', this)">❤️ Românticas</div>
+            <div class="filter-chip" onclick="filtrar('ballads', this)">🤘 Ballads</div>
+            <div class="filter-chip fav-tab" onclick="mostrarFavoritos(this)">⭐ Favoritos</div>
+        </div>
+
+        <div class="main-content" id="lista-radios"></div>
+
+        <div class="player-bar" id="player-ui">
+            <div class="player-top">
+                <div class="player-text">
+                    <b id="current-station">ESCOLHA UMA ESTAÇÃO</b>
+                    <div class="eq-container">
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                    </div>
+                </div>
+                <button class="play-btn" onclick="toggleAudio()" id="master-btn">▶</button>
             </div>
-            <button class="play-btn">▶</button>
-        </div>
-
-        <div class="station-card" onclick="playStation('https://ais-sa2.cdnstream1.com/2285_128.mp3', this)">
-            <div class="station-info">
-                <span class="station-name">Hard Rock Hell</span>
-                <span class="station-genre">Heavy Metal & Hard Rock</span>
+            <div class="volume-box">
+                <span style="font-size:12px;">🔈</span>
+                <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.8" oninput="setVolume(this.value)">
+                <span style="font-size:12px;">🔊</span>
             </div>
-            <button class="play-btn">▶</button>
         </div>
     </div>
-
-    <div class="status-bar" id="player-status">
-        <div class="eq-container">
-            <div class="eq-bar"></div>
-            <div class="eq-bar"></div>
-            <div class="eq-bar"></div>
-        </div>
-        <div id="current-status">SINAL STANDBY</div>
-        <div class="volume-box">
-            <span>🔈</span>
-            <input type="range" class="volume-slider" id="volume" min="0" max="1" step="0.1" value="0.8">
-            <span>🔊</span>
-        </div>
-    </div>
-
-    <audio id="audio-player"></audio>
 
     <script>
-        const audio = document.getElementById('audio-player');
-        const statusText = document.getElementById('current-status');
-        const playerStatus = document.getElementById('player-status');
-        const volumeSlider = document.getElementById('volume');
+        let audio = new Audio();
+        let favoritos = JSON.parse(localStorage.getItem('melodic_favs')) || [];
 
-        function playStation(url, element) {
-            const allCards = document.querySelectorAll('.station-card');
-            allCards.forEach(card => card.classList.remove('active'));
+        async function buscarRadios(tag) {
+            const lista = document.getElementById('lista-radios');
+            const statusText = document.getElementById('scanner-status');
             
-            if (audio.src === url && !audio.paused) {
-                audio.pause();
-                playerStatus.classList.remove('playing');
-                statusText.innerText = "SINAL INTERROMPIDO";
-            } else {
-                element.classList.add('active');
-                audio.src = url;
-                audio.play();
-                playerStatus.classList.add('playing');
-                statusText.innerText = "SINAL LOCALIZADO";
+            statusText.innerText = "SCANNER: VARRENDO FREQUÊNCIAS...";
+            lista.innerHTML = '<p style="text-align:center; padding: 40px; color:#666; font-size:13px;">Buscando sinal no globo...</p>';
+            
+            try {
+                const res = await fetch(`https://de1.api.radio-browser.info/json/stations/bytag/${encodeURIComponent(tag)}?limit=100&order=clickcount&reverse=true`);
+                let dados = await res.json();
+                dados = dados.sort(() => Math.random() - 0.5).slice(0, 50);
+                statusText.innerText = `SINAL LOCALIZADO: ${dados.length} RÁDIOS`;
+                renderizarLista(dados);
+            } catch (e) { 
+                statusText.innerText = "ERRO: FALHA NO SATÉLITE";
+                lista.innerHTML = '<p style="text-align:center; padding: 40px;">Verifique sua conexão.</p>';
             }
         }
 
-        volumeSlider.oninput = (e) => {
-            audio.volume = e.target.value;
-        };
+        function renderizarLista(dados) {
+            const lista = document.getElementById('lista-radios');
+            lista.innerHTML = '';
+            dados.forEach(radio => {
+                const isFav = favoritos.some(f => f.stationuuid === radio.stationuuid);
+                const card = document.createElement('div');
+                card.className = 'radio-card';
+                card.innerHTML = `
+                    <div class="info">
+                        <h3>${radio.name.trim()}</h3>
+                        <span>${radio.country || 'Global'} • ${radio.bitrate || '128'}kbps</span>
+                    </div>
+                    <div class="actions">
+                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorito('${radio.stationuuid}', '${radio.name.replace(/'/g, "")}', '${radio.url}', this)">❤</button>
+                        <button class="play-btn" onclick="playRadio('${radio.name.replace(/'/g, "")}', '${radio.url}')">▶</button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+        }
+
+        function toggleFavorito(id, nome, url, btn) {
+            const index = favoritos.findIndex(f => f.stationuuid === id);
+            if (index > -1) {
+                favoritos.splice(index, 1);
+                btn.classList.remove('active');
+            } else {
+                favoritos.push({ stationuuid: id, name: nome, url: url });
+                btn.classList.add('active');
+            }
+            localStorage.setItem('melodic_favs', JSON.stringify(favoritos));
+        }
+
+        function mostrarFavoritos(elemento) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            elemento.classList.add('active');
+            document.getElementById('scanner-status').innerText = `COLEÇÃO PRIVADA: ${favoritos.length} ESTAÇÕES`;
+            renderizarLista(favoritos);
+            if(favoritos.length === 0) {
+                document.getElementById('lista-radios').innerHTML = '<p style="text-align:center; padding:40px; color:#666;">Sua coleção está vazia!</p>';
+            }
+        }
+
+        function playRadio(nome, url) {
+            audio.src = url;
+            audio.play().catch(() => alert("Estação temporariamente offline"));
+            document.getElementById('current-station').innerText = nome;
+            document.getElementById('player-ui').classList.add('playing');
+            document.getElementById('master-btn').innerText = "⏸";
+        }
+
+        function toggleAudio() {
+            if (audio.paused) { audio.play(); document.getElementById('player-ui').classList.add('playing'); document.getElementById('master-btn').innerText = "⏸"; }
+            else { audio.pause(); document.getElementById('player-ui').classList.remove('playing'); document.getElementById('master-btn').innerText = "▶"; }
+        }
+
+        function setVolume(v) { audio.volume = v; }
+
+        function filtrar(tag, elemento) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            elemento.classList.add('active');
+            buscarRadios(tag);
+        }
+
+        window.onload = () => buscarRadios('melodic rock');
     </script>
 </body>
 </html>

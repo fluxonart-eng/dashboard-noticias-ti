@@ -36,15 +36,37 @@
 
         .app-banner {
             width: 100%;
-            background-color: #000;
-            border-bottom: 2px solid #ffcc00;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-bottom: 3px solid #ffcc00;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .app-banner-fallback {
+            display: none;
         }
         
         .app-banner img {
             width: 100%;
             height: auto;
             display: block;
-            border: none;
+        }
+
+        .app-banner h2 {
+            color: #ffcc00;
+            margin: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .app-banner p {
+            color: #fff;
+            margin: 10px 0 0;
+            font-size: 12px;
+            letter-spacing: 2px;
+            opacity: 0.8;
         }
 
         .app-header { padding: 20px 20px 5px; text-align: left; }
@@ -132,7 +154,11 @@
 
     <div class="app-shell">
         <div class="app-banner">
-            <img src="banner.png" alt="Melodic Pulse Banner" width="480" height="auto">
+            <img src="banner.png" alt="Melodic Pulse Banner" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="app-banner-fallback" style="display:none;">
+                <h2>MELODIC PULSE</h2>
+                <p>GLOBAL RADIO SCANNER</p>
+            </div>
         </div>
 
         <div class="app-header">

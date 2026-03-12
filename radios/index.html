@@ -37,16 +37,96 @@
 
         .app-banner {
             width: 100%;
-            height: auto;
-            background-color: #000;
-            border-bottom: 2px solid #ffcc00;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-bottom: 3px solid #ffcc00;
+            padding: 35px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        .app-banner img {
-            width: 100%;
-            height: auto;
-            display: block;
-            -webkit-user-drag: none;
+        .app-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 204, 0, 0.03) 10px,
+                rgba(255, 204, 0, 0.03) 20px
+            );
+            animation: scan 20s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .banner-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .app-banner h2 {
+            color: #ffcc00;
+            margin: 0;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+        }
+        
+        .app-banner p {
+            color: #fff;
+            margin: 8px 0 0;
+            font-size: 11px;
+            letter-spacing: 3px;
+            opacity: 0.7;
+            text-transform: uppercase;
+        }
+
+        .eq-animation {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 15px;
+            height: 20px;
+            align-items: flex-end;
+        }
+        
+        .eq-bar-banner {
+            width: 4px;
+            background: #ffcc00;
+            border-radius: 2px;
+            animation: eqBanner 0.8s ease-in-out infinite alternate;
+        }
+        
+        .eq-bar-banner:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .eq-bar-banner:nth-child(2) { height: 15px; animation-delay: 0.1s; }
+        .eq-bar-banner:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+        .eq-bar-banner:nth-child(4) { height: 18px; animation-delay: 0.3s; }
+        .eq-bar-banner:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+        
+        @keyframes eqBanner {
+            from { transform: scaleY(0.3); opacity: 0.5; }
+            to { transform: scaleY(1); opacity: 1; }
         }
 
         .app-header { padding: 20px 20px 5px; text-align: left; }
@@ -134,7 +214,18 @@
 
     <div class="app-shell">
         <div class="app-banner">
-            <img src="https://seudominio.com/radios/banner.png?t=1" alt="Melodic Pulse Banner">
+            <div class="banner-content">
+                <div class="banner-icon">📻</div>
+                <h2>MELODIC PULSE</h2>
+                <p>Global Radio Scanner</p>
+                <div class="eq-animation">
+                    <div class="eq-bar-banner"></div>
+                    <div class="eq-bar-banner"></div>
+                    <div class="eq-bar-banner"></div>
+                    <div class="eq-bar-banner"></div>
+                    <div class="eq-bar-banner"></div>
+                </div>
+            </div>
         </div>
 
         <div class="app-header">

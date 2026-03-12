@@ -11,12 +11,14 @@
     <meta name="theme-color" content="#0d0d0d">
 
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             background-color: #000;
             color: #f0f0f0;
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0; padding: 0;
-            display: flex; justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
@@ -31,42 +33,20 @@
             position: relative;
             padding-bottom: 180px;
             min-height: 100vh;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
         .app-banner {
             width: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            border-bottom: 3px solid #ffcc00;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        
-        .app-banner-fallback {
-            display: none;
+            height: auto;
+            background-color: #000;
+            border-bottom: 2px solid #ffcc00;
         }
         
         .app-banner img {
             width: 100%;
             height: auto;
             display: block;
-        }
-
-        .app-banner h2 {
-            color: #ffcc00;
-            margin: 0;
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .app-banner p {
-            color: #fff;
-            margin: 10px 0 0;
-            font-size: 12px;
-            letter-spacing: 2px;
-            opacity: 0.8;
+            -webkit-user-drag: none;
         }
 
         .app-header { padding: 20px 20px 5px; text-align: left; }
@@ -154,11 +134,7 @@
 
     <div class="app-shell">
         <div class="app-banner">
-            <img src="banner.png" alt="Melodic Pulse Banner" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="app-banner-fallback" style="display:none;">
-                <h2>MELODIC PULSE</h2>
-                <p>GLOBAL RADIO SCANNER</p>
-            </div>
+            <img src="https://seudominio.com/radios/banner.png?t=1" alt="Melodic Pulse Banner">
         </div>
 
         <div class="app-header">
